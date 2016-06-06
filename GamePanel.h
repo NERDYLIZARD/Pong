@@ -13,6 +13,7 @@ class GamePanel
 	int fps;
 	float framecap;
 	float delta;
+	float accumulatedTime;
 	//float interpolation;
 	Ball *ball;
 	Paddle *paddle1;
@@ -27,6 +28,6 @@ public:
 	~GamePanel();
 	void gameLoop();
 	void input();
-	void update(long long);
+	void update(float);
 	void render();
 };

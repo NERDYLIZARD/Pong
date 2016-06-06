@@ -7,12 +7,13 @@
 
 sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG");
 
-GamePanel::GamePanel():
+GamePanel::GamePanel() :
 	pause(false),
 	fps(60),
 	framecap(1000000.f / fps),
+	accumulatedTime(0.f),
 	//interpolation(0.0),
-	delta(0.0)
+	delta(0.f)
 {
 	ball = new Ball(WIDTH / 2.f, HEIGHT / 2.f);
 	paddle1 = new Paddle(1, 20.f, 20.f);
@@ -35,11 +36,12 @@ void GamePanel::gameLoop() {
 
 	while (window.isOpen()) {
 		input();
-		delta += clock.restart().asMicroseconds() / framecap;
-		if (delta >= 1) {
+		delta = clock.restart().asMicroseconds() / framecap;
+		accumulatedTime += delta;
+		if (accumulatedTime >= 1) {
 			if (!pause)
-				update(clock.restart().asMicroseconds());
-			delta--;
+				update(delta);
+			accumulatedTime--;
 			//interpolation = delta;
 		}
 		render();
@@ -47,7 +49,7 @@ void GamePanel::gameLoop() {
 }
 
 
-void GamePanel::update(long long deltaTime) {
+void GamePanel::update(float deltaTime) {
 	// collision
 	ball->collideWith(*paddle1);
 	ball->collideWith(*paddle2);
