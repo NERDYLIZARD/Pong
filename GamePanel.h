@@ -27,6 +27,6 @@ public:
 	~GamePanel();
 	void gameLoop();
 	void input();
-	void update(float);
+	void update(long long);
 	void render();
 };

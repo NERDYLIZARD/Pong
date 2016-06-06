@@ -47,7 +47,7 @@ void GamePanel::gameLoop() {
 }
 
 
-void GamePanel::update(float deltaTime) {
+void GamePanel::update(long long deltaTime) {
 	// collision
 	ball->collideWith(*paddle1);
 	ball->collideWith(*paddle2);
