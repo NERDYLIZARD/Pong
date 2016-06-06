@@ -9,8 +9,8 @@ const float Ball::PI = 3.14159265358979f;
 
 
 Ball::Ball(float x, float y) :
-	r(10.f),
-	maxSpeed(5.f),
+	r(5.f),
+	maxSpeed(10.f),
 	speed(maxSpeed),
 	angle(30.f),
 	elapse(0.f),
@@ -43,12 +43,12 @@ void Ball::collideWith(Paddle const & paddle) {
 
 		// hiting portion
 		if (getY() <= paddle.getY()) {
-			angle = 180.f - angle;
+			angle = 180.f - angle + rand() % 20;
 			std::cout << "top hit" << std::endl;
 		}
 
 		else {
-			angle = 180.f - angle;
+			angle = 180.f - angle - rand() % 20;
 			std::cout << "bottom hit" << std::endl;
 		}
 
