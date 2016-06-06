@@ -23,6 +23,9 @@ public:
 	static const int WIDTH = 640;
 	static const int HEIGHT = 480;
 	static sf::RenderWindow window;
+	static const float PI;
+
+
 public:
 	GamePanel();
 	~GamePanel();
@@ -30,4 +33,7 @@ public:
 	void input();
 	void update(float);
 	void render();
+
+	float toRadians(float);
+
 };

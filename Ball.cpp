@@ -4,16 +4,12 @@
 #include <iostream>
 #include <cmath>
 
-
 const float Ball::PI = 3.14159265358979f;
-
 
 Ball::Ball(float x, float y) :
 	r(5.f),
-	maxSpeed(10.f),
-	speed(maxSpeed),
+	speed(10.f),
 	angle(30.f),
-	elapse(0.f),
 	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)) )
 {
 	shape.setPosition(x, y);
@@ -24,41 +20,15 @@ Ball::Ball(float x, float y) :
 
 float Ball::getX() { return shape.getPosition().x; }
 float Ball::getY() { return shape.getPosition().y; }
+float Ball::getR() { return r; }
 float Ball::getLeft() { return getX() - r; }
 float Ball::getRight() { return getX() + r; }
 float Ball::getTop() { return getY() - r; }
 float Ball::getBottom() { return getY() + r; }
+float Ball::getAngle() {return angle;}
 
-
-void Ball::collideWith(Paddle const & paddle) {
-
-	float dx = abs(getX() - paddle.getX());
-	float dy = abs(getY() - paddle.getY());
-
-	if (dx >= r + paddle.getWidth() / 2) return;
-	if (dy >= r + paddle.getHeight() / 2) return;
-
-	if (dx < r + paddle.getWidth() / 2
-		&& vel.x < 0) {
-
-		// hiting portion
-		if (getY() <= paddle.getY()) {
-			angle = 180.f - angle + rand() % 20;
-			std::cout << "top hit" << std::endl;
-		}
-
-		else {
-			angle = 180.f - angle - rand() % 20;
-			std::cout << "bottom hit" << std::endl;
-		}
-
-		std::cout << "X hit" << std::endl;
-	}
-
-	std::cout << "vel.x = " << vel.x << std::endl;
-	std::cout << "vel.y = " << vel.y << std::endl;
-
-}
+void Ball::setX(float x) { this->x = x; }
+void Ball::setAngle(float angle) {this->angle = angle;}
 
 
 void Ball::update(float deltaTime) {
@@ -89,7 +59,8 @@ void Ball::update(float deltaTime) {
 	}
 
 	if (getTop() < 0 || getBottom() >= float(GamePanel::HEIGHT)) {
-		angle = 360.f - angle;
+		//angle = 360.f - angle;
+		angle = -angle;
 	}
 
 	vel.x = cos(toRadians(angle)) * speed;

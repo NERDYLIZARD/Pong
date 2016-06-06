@@ -6,6 +6,7 @@
 #include "Paddle.h"
 
 sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG");
+const float GamePanel::PI = 3.14159265358979f;
 
 GamePanel::GamePanel() :
 	pause(false),
@@ -17,7 +18,7 @@ GamePanel::GamePanel() :
 {
 	ball = new Ball(WIDTH / 2.f, HEIGHT / 2.f);
 	paddle1 = new Paddle(1, 20.f, 20.f);
-	paddle2 = new Paddle(2, (float)WIDTH - 20.f + 1000 ,
+	paddle2 = new Paddle(2, (float)WIDTH - 20.f ,
 							(float)HEIGHT - 20.f);
 
 	gameLoop();
@@ -50,9 +51,37 @@ void GamePanel::gameLoop() {
 
 
 void GamePanel::update(float deltaTime) {
-	// collision
-	ball->collideWith(*paddle1);
-	ball->collideWith(*paddle2);
+// collision
+	//left paddle
+	if (ball->getLeft() < paddle1->getRight() &&
+		ball->getLeft() > paddle1->getX() &&
+		ball->getBottom() >= paddle1->getTop() &&
+		ball->getTop() <= paddle1->getBottom() )
+	{
+		//hiting portion
+		if (ball->getY() > paddle1->getY()) {
+			ball->setAngle(180.f - ball->getAngle() + std::rand() % 20);
+		}
+		else {
+			ball->setAngle(180.f - ball->getAngle() - std::rand() % 20);
+		}
+		ball->setX(paddle1->getRight() + ball->getR() + 0.1f);
+	}
+
+	// right paddle
+	if (ball->getRight() > paddle2->getLeft() &&
+		ball->getRight() < paddle2->getX() &&
+		ball->getBottom() >= paddle2->getTop() && 
+		ball->getTop() <= paddle2->getBottom() )
+	{
+		if (ball->getY() > paddle2->getY()) {
+			ball->setAngle(180.f - ball->getAngle() + std::rand() % 20);
+		}
+		else {
+			ball->setAngle(180.f - ball->getAngle() - std::rand() % 20);
+		}
+		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
+	}
 
 	ball->update(deltaTime);
 	paddle1->update();
@@ -85,17 +114,30 @@ void GamePanel::input() {
 			break;
 		}
 
+		// left paddle input
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
 			paddle1->setUp(true);
 		else
 			paddle1->setUp(false);
-
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
 			paddle1->setDown(true);
 		else
 			paddle1->setDown(false);
 
+		// right paddle input
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O))
+			paddle2->setUp(true);
+		else
+			paddle2->setUp(false);
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L))
+			paddle2->setDown(true);
+		else
+			paddle2->setDown(false);
+
 	}
 
+}
 
+float GamePanel::toRadians(float angle) {
+	return angle * PI / 180.f;
 }

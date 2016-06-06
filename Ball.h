@@ -8,10 +8,8 @@ class Ball
 	float x;
 	float y;
 	float r;
-	float maxSpeed;
 	float speed;
 	float angle;
-	float elapse;
 	const static float PI;
 	sf::Vector2f vel;
 	sf::CircleShape shape;
@@ -20,13 +18,17 @@ class Ball
 public:
 	float getX();
 	float getY();
+	float getR();
 	float getLeft();
 	float getRight();
 	float getTop();
 	float getBottom();
+	float getAngle();
 
+	void setX(float);
+	void setAngle(float);
+	
 	float toRadians(float);
-	void collideWith(Paddle const &);
 
 	void update(float);
 	void draw(sf::RenderWindow &window);
