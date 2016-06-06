@@ -4,8 +4,8 @@
 
 
 Paddle::Paddle(int padNum, float x, float y) :
-	width(10.0f),
-	height(100.0f),
+	width(11.0f),
+	height(470.0f),
 	speed(5.f),
 	vel(0, 0),
 	up(false),
