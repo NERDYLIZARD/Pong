@@ -43,13 +43,10 @@ void GamePanel::gameLoop() {
 		accumulatedTime += delta;
 		if (accumulatedTime >= framecap) {
 			if (!pause) {
-				std::cout << delta << '\n';
-				//update(clock.restart().asMicroseconds());
-				update(delta);
-
+				std::cout << delta / 1000000.f << '\n';
+				update(delta/1000000.f);
 			}
 			accumulatedTime -= framecap;
-			//interpolation = delta;
 		}
 		render();
 	}
@@ -65,7 +62,8 @@ void GamePanel::update(float deltaTime) {
 	// collision
 	//left paddle
 	if (ball->getLeft() < paddle1->getRight() &&
-		ball->getLeft() > paddle1->getX() &&
+		//ball->getLeft() > paddle1->getX() &&
+		ball->getVelX() < 0 &&
 		ball->getBottom() >= paddle1->getTop() &&
 		ball->getTop() <= paddle1->getBottom() )
 	{
@@ -81,7 +79,8 @@ void GamePanel::update(float deltaTime) {
 
 	// right paddle
 	if (ball->getRight() > paddle2->getLeft() &&
-		ball->getRight() < paddle2->getX() &&
+		//ball->getRight() < paddle2->getX() &&
+		ball->getVelX() > 0 &&
 		ball->getBottom() >= paddle2->getTop() && 
 		ball->getTop() <= paddle2->getBottom() )
 	{
