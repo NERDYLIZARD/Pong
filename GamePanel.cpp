@@ -5,8 +5,9 @@
 #include "Ball.h"
 #include "Paddle.h"
 
-// size of ball and paddle matter
-
+// declare in .cpp as static is a class member (!obj member)
+const int GamePanel::WIDTH = 640;
+const int GamePanel::HEIGHT = 480;
 sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG");
 
 GamePanel::GamePanel() :
@@ -60,7 +61,7 @@ void GamePanel::update(float deltaTime) {
 	paddle2->update(deltaTime);
 	ball->update(deltaTime);
 
-// collision
+// ball-paddle collision
 	//left paddle
 	if (ball->getLeft() < paddle1->getRight() &&
 		ball->getVelX() < 0 &&
@@ -92,8 +93,8 @@ void GamePanel::update(float deltaTime) {
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
 	}
 
-	// AI
-	if (ball->getX() > GamePanel::WIDTH / 2 )
+// AI
+	if (ball->getX() > GamePanel::WIDTH / 2 + 200 )
 	{
 		if (ball->getTop() < paddle2->getTop() &&
 			ball->getVelX() > 0)  {
@@ -112,7 +113,7 @@ void GamePanel::update(float deltaTime) {
 		}
 	}
 
-	if (ball->getX() < GamePanel::WIDTH / 2)
+	if (ball->getX() < GamePanel::WIDTH / 2 - 200)
 	{
 		if (ball->getTop() < paddle1->getTop() &&
 			ball->getVelX() < 0) {

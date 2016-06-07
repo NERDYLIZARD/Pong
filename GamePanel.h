@@ -20,8 +20,8 @@ class GamePanel
 	Paddle *paddle2;
 
 public:
-	static const int WIDTH = 640;
-	static const int HEIGHT = 480;
+	static const int WIDTH;
+	static const int HEIGHT;
 	static sf::RenderWindow window;
 
 

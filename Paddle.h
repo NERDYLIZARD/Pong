@@ -38,7 +38,6 @@ public:
 	void setDown(bool);
 	void setVelY(float);
 
-
 	int getPadNum() const;
 
 	void update(float);
