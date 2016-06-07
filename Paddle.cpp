@@ -4,9 +4,9 @@
 
 
 Paddle::Paddle(int padNum, float x, float y) :
-	width(11.0f),
+	width(5.0f),
 	height(470.0f),
-	speed(5.f),
+	speed(10.f),
 	vel(0, 0),
 	up(false),
 	down(false)
@@ -41,7 +41,8 @@ void Paddle::setDown(bool boo) { down = boo; }
 
 int Paddle::getPadNum() const { return padNum; }
 
-void Paddle::update() {
+
+void Paddle::update(float delta) {
 	if (up && getTop() > 0)
 		vel.y = -speed;
 	else if (down && getBottom() < GamePanel::HEIGHT)

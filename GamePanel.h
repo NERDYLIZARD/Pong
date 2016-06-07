@@ -23,7 +23,6 @@ public:
 	static const int WIDTH = 640;
 	static const int HEIGHT = 480;
 	static sf::RenderWindow window;
-	static const float PI;
 
 
 public:
@@ -33,7 +32,5 @@ public:
 	void input();
 	void update(float);
 	void render();
-
-	float toRadians(float);
 
 };

@@ -65,6 +65,8 @@ void Ball::update(float deltaTime) {
 
 	vel.x = cos(toRadians(angle)) * speed;
 	vel.y = sin(toRadians(angle)) * speed;
+	//vel.x = cos(toRadians(angle)) * speed * deltaTime;
+	//vel.y = sin(toRadians(angle)) * speed * deltaTime;
 
 	// x += dx, y += dy
 	shape.move(vel);

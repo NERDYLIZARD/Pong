@@ -5,8 +5,9 @@
 #include "Ball.h"
 #include "Paddle.h"
 
+// size of ball and paddle matter
+
 sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG");
-const float GamePanel::PI = 3.14159265358979f;
 
 GamePanel::GamePanel() :
 	pause(false),
@@ -37,12 +38,17 @@ void GamePanel::gameLoop() {
 
 	while (window.isOpen()) {
 		input();
-		delta = clock.restart().asMicroseconds() / framecap;
+
+		delta = clock.restart().asMicroseconds();
 		accumulatedTime += delta;
-		if (accumulatedTime >= 1) {
-			if (!pause)
+		if (accumulatedTime >= framecap) {
+			if (!pause) {
+				std::cout << delta << '\n';
+				//update(clock.restart().asMicroseconds());
 				update(delta);
-			accumulatedTime--;
+
+			}
+			accumulatedTime -= framecap;
 			//interpolation = delta;
 		}
 		render();
@@ -51,7 +57,12 @@ void GamePanel::gameLoop() {
 
 
 void GamePanel::update(float deltaTime) {
-// collision
+
+	paddle1->update(deltaTime);
+	paddle2->update(deltaTime);
+	ball->update(deltaTime);
+
+	// collision
 	//left paddle
 	if (ball->getLeft() < paddle1->getRight() &&
 		ball->getLeft() > paddle1->getX() &&
@@ -82,10 +93,6 @@ void GamePanel::update(float deltaTime) {
 		}
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
 	}
-
-	ball->update(deltaTime);
-	paddle1->update();
-	paddle2->update();
 }
 
 void GamePanel::render() {
@@ -102,7 +109,6 @@ void GamePanel::render() {
 void GamePanel::input() {
 	sf::Event event;
 	window.setKeyRepeatEnabled(true);
-
 
 	while (window.pollEvent(event)) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))
@@ -138,6 +144,3 @@ void GamePanel::input() {
 
 }
 
-float GamePanel::toRadians(float angle) {
-	return angle * PI / 180.f;
-}

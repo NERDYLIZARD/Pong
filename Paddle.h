@@ -36,7 +36,7 @@ public:
 
 	int getPadNum() const;
 
-	void update();
+	void update(float);
 	void draw(sf::RenderWindow&);
 	Paddle(int, float, float);
 	~Paddle();
