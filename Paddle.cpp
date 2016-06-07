@@ -5,7 +5,7 @@
 
 Paddle::Paddle(int padNum, float x, float y) :
 	width(5.0f),
-	height(470.0f),
+	height(50.0f),
 	speed(10.f),
 	vel(0, 0),
 	up(false),
@@ -36,8 +36,15 @@ float Paddle::getRight() const { return getX() + width / 2; }
 float Paddle::getTop() const { return getY() - height / 2; }
 float Paddle::getBottom() const { return getY() + height / 2; }
 
+float Paddle::getSpeed() const
+{
+	return speed;
+}
+
 void Paddle::setUp(bool boo) { up = boo; }
 void Paddle::setDown(bool boo) { down = boo; }
+
+void Paddle::setVelY(float velY) { this->vel.y = velY;}
 
 int Paddle::getPadNum() const { return padNum; }
 

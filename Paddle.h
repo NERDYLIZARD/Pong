@@ -31,8 +31,13 @@ public:
 	float getTop() const;
 	float getBottom() const;
 
+	float getSpeed() const;
+
+
 	void setUp(bool);
 	void setDown(bool);
+	void setVelY(float);
+
 
 	int getPadNum() const;
 

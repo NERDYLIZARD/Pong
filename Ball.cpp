@@ -8,7 +8,7 @@ const float Ball::PI = 3.14159265358979f;
 
 Ball::Ball(float x, float y) :
 	r(5.f),
-	speed(15.f),
+	speed(5.f),
 	angle(30.f),
 	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)) )
 {
@@ -64,11 +64,11 @@ void Ball::update(float deltaTime) {
 
 	if (getTop() < 0 || getBottom() >= float(GamePanel::HEIGHT)) {
 		angle = 360.f - angle;
-		//angle = -angle;
 	}
 
 	vel.x = cos(toRadians(angle)) * speed;
 	vel.y = sin(toRadians(angle)) * speed;
+
 	//vel.x = cos(toRadians(angle)) * speed * deltaTime;
 	//vel.y = sin(toRadians(angle)) * speed * deltaTime;
 

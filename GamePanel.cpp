@@ -41,12 +41,13 @@ void GamePanel::gameLoop() {
 
 		delta = clock.restart().asMicroseconds();
 		accumulatedTime += delta;
-		if (accumulatedTime >= framecap) {
+		while (accumulatedTime >= framecap) {
 			if (!pause) {
-				std::cout << delta / 1000000.f << '\n';
+				//std::cout << delta / 1000000.f << '\n';
 				update(delta/1000000.f);
 			}
 			accumulatedTime -= framecap;
+			//interpolation = accumulatedTime;
 		}
 		render();
 	}
@@ -59,10 +60,9 @@ void GamePanel::update(float deltaTime) {
 	paddle2->update(deltaTime);
 	ball->update(deltaTime);
 
-	// collision
+// collision
 	//left paddle
 	if (ball->getLeft() < paddle1->getRight() &&
-		//ball->getLeft() > paddle1->getX() &&
 		ball->getVelX() < 0 &&
 		ball->getBottom() >= paddle1->getTop() &&
 		ball->getTop() <= paddle1->getBottom() )
@@ -79,7 +79,6 @@ void GamePanel::update(float deltaTime) {
 
 	// right paddle
 	if (ball->getRight() > paddle2->getLeft() &&
-		//ball->getRight() < paddle2->getX() &&
 		ball->getVelX() > 0 &&
 		ball->getBottom() >= paddle2->getTop() && 
 		ball->getTop() <= paddle2->getBottom() )
@@ -92,6 +91,46 @@ void GamePanel::update(float deltaTime) {
 		}
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
 	}
+
+	// AI
+	if (ball->getX() > GamePanel::WIDTH / 2 )
+	{
+		if (ball->getTop() < paddle2->getTop() &&
+			ball->getVelX() > 0)  {
+			paddle2->setUp(true);
+		}
+		else {
+			paddle2->setUp(false);
+		}
+		
+		if (ball->getBottom() > paddle2->getBottom() &&
+			ball->getVelX() > 0)  {
+			paddle2->setDown(true);
+		}
+		else {
+			paddle2->setDown(false);
+		}
+	}
+
+	if (ball->getX() < GamePanel::WIDTH / 2)
+	{
+		if (ball->getTop() < paddle1->getTop() &&
+			ball->getVelX() < 0) {
+			paddle1->setUp(true);
+		}
+		else {
+			paddle1->setUp(false);
+		}
+
+		if (ball->getBottom() > paddle1->getBottom() &&
+			ball->getVelX() < 0) {
+			paddle1->setDown(true);
+		}
+		else {
+			paddle1->setDown(false);
+		}
+	}
+
 }
 
 void GamePanel::render() {
@@ -102,12 +141,11 @@ void GamePanel::render() {
 	paddle2->draw(window);
 
 	window.display();
-
 }
 
 void GamePanel::input() {
 	sf::Event event;
-	window.setKeyRepeatEnabled(true);
+	//window.setKeyRepeatEnabled(true);
 
 	while (window.pollEvent(event)) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))

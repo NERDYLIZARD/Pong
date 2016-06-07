@@ -23,6 +23,7 @@ public:
 	float getRight();
 	float getTop();
 	float getBottom();
+	float getVelX() const;
 	float getAngle();
 
 	void setX(float);
