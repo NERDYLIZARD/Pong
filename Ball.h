@@ -10,6 +10,7 @@ class Ball
 	float r;
 	float speed;
 	float angle;
+	float maxAngle;
 	const static float PI;
 	sf::Vector2f vel;
 	sf::CircleShape shape;
@@ -25,6 +26,7 @@ public:
 	float getBottom();
 	float getVelX() const;
 	float getAngle();
+	float getMaxAngle();
 
 	void setX(float);
 	void setAngle(float);

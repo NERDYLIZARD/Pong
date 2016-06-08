@@ -68,13 +68,13 @@ void GamePanel::update(float deltaTime) {
 		ball->getBottom() >= paddle1->getTop() &&
 		ball->getTop() <= paddle1->getBottom() )
 	{
-		//hiting portion
-		if (ball->getY() > paddle1->getY()) {
-			ball->setAngle(180.f - ball->getAngle() + std::rand() % 20);
-		}
-		else {
-			ball->setAngle(180.f - ball->getAngle() - std::rand() % 20);
-		}
+		float relativeIntersectY = paddle1->getY() - ball->getY();
+		std::cout << relativeIntersectY << '\n';
+
+		float normalizedRelativeIntersectY = relativeIntersectY / (paddle1->getHeight() / 2);
+		std::cout << normalizedRelativeIntersectY << "\n\n";
+		// minus sign for realistic direction
+		ball->setAngle( -(normalizedRelativeIntersectY * ball->getMaxAngle() ));
 		ball->setX(paddle1->getRight() + ball->getR() + 0.1f);
 	}
 
@@ -84,17 +84,18 @@ void GamePanel::update(float deltaTime) {
 		ball->getBottom() >= paddle2->getTop() && 
 		ball->getTop() <= paddle2->getBottom() )
 	{
-		if (ball->getY() > paddle2->getY()) {
-			ball->setAngle(180.f - ball->getAngle() + std::rand() % 20);
-		}
-		else {
-			ball->setAngle(180.f - ball->getAngle() - std::rand() % 20);
-		}
+		float relativeIntersectY = paddle2->getY() - ball->getY();
+		std::cout << relativeIntersectY << '\n';
+
+		float normalizedRelativeIntersectY = relativeIntersectY / (paddle2->getHeight()/2);
+		std::cout << normalizedRelativeIntersectY << "\n\n";
+
+		ball->setAngle( -(180.f - (normalizedRelativeIntersectY * ball->getMaxAngle()) ) );
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
 	}
 
-// AI
-	if (ball->getX() > GamePanel::WIDTH / 2 + 200 )
+ // AI
+	if (ball->getX() > GamePanel::WIDTH / 2 + 100 )
 	{
 		if (ball->getTop() < paddle2->getTop() &&
 			ball->getVelX() > 0)  {
@@ -113,7 +114,7 @@ void GamePanel::update(float deltaTime) {
 		}
 	}
 
-	if (ball->getX() < GamePanel::WIDTH / 2 - 200)
+	if (ball->getX() < GamePanel::WIDTH / 2 - 100)
 	{
 		if (ball->getTop() < paddle1->getTop() &&
 			ball->getVelX() < 0) {

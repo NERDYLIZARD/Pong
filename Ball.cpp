@@ -8,9 +8,10 @@ const float Ball::PI = 3.14159265358979f;
 
 Ball::Ball(float x, float y) :
 	r(5.f),
-	speed(5.f),
+	speed(10.f),
 	angle(30.f),
-	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)) )
+	maxAngle(60.f),
+	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)))
 {
 	shape.setPosition(x, y);
 	shape.setRadius(r);
@@ -29,10 +30,12 @@ float Ball::getVelX() const
 {
 	return vel.x;
 }
-float Ball::getAngle() {return angle;}
+float Ball::getAngle() { return angle; }
+float Ball::getMaxAngle() { return maxAngle; }
+
 
 void Ball::setX(float x) { this->x = x; }
-void Ball::setAngle(float angle) {this->angle = angle;}
+void Ball::setAngle(float angle) { this->angle = angle; }
 
 
 void Ball::update(float deltaTime) {
@@ -62,8 +65,14 @@ void Ball::update(float deltaTime) {
 		angle = 180.f - angle;
 	}
 
-	if (getTop() < 0 || getBottom() >= float(GamePanel::HEIGHT)) {
+	if (getTop() < 0) {
 		angle = 360.f - angle;
+		y = 0.1f;
+	}
+
+	if (getBottom() >= float(GamePanel::HEIGHT) ) {
+		angle = 360.f - angle;
+		y = GamePanel::HEIGHT - 0.1f;
 	}
 
 	vel.x = cos(toRadians(angle)) * speed;
