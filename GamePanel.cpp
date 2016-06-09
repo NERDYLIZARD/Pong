@@ -68,13 +68,18 @@ void GamePanel::update(float deltaTime) {
 		ball->getBottom() >= paddle1->getTop() &&
 		ball->getTop() <= paddle1->getBottom() )
 	{
+	// relative with intersecting paddle-ball
+		// hit center, ball bounds horizontally
+		// hit edges, ball bounds by maxAngle
 		float relativeIntersectY = paddle1->getY() - ball->getY();
-		std::cout << relativeIntersectY << '\n';
-
 		float normalizedRelativeIntersectY = relativeIntersectY / (paddle1->getHeight() / 2);
-		std::cout << normalizedRelativeIntersectY << "\n\n";
 		// minus sign for realistic direction
-		ball->setAngle( -(normalizedRelativeIntersectY * ball->getMaxAngle() ));
+			// hit bottom, ball bounds down
+			// hit top, ball bounds up
+		normalizedRelativeIntersectY = -normalizedRelativeIntersectY;
+		// normalized: [-1, 1]
+		// angle = [-maxAngle, maxAngle]
+		ball->setAngle( normalizedRelativeIntersectY * ball->getMaxAngle() );
 		ball->setX(paddle1->getRight() + ball->getR() + 0.1f);
 	}
 
@@ -85,17 +90,16 @@ void GamePanel::update(float deltaTime) {
 		ball->getTop() <= paddle2->getBottom() )
 	{
 		float relativeIntersectY = paddle2->getY() - ball->getY();
-		std::cout << relativeIntersectY << '\n';
-
 		float normalizedRelativeIntersectY = relativeIntersectY / (paddle2->getHeight()/2);
-		std::cout << normalizedRelativeIntersectY << "\n\n";
+		normalizedRelativeIntersectY = -normalizedRelativeIntersectY;
 
-		ball->setAngle( -(180.f - (normalizedRelativeIntersectY * ball->getMaxAngle()) ) );
+		ball->setAngle( 180.f - (normalizedRelativeIntersectY * ball->getMaxAngle()) );
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
 	}
 
- // AI
-	if (ball->getX() > GamePanel::WIDTH / 2 + 100 )
+// AI
+	int testAI = 150;
+	if (ball->getX() > GamePanel::WIDTH / 2 + testAI )
 	{
 		if (ball->getTop() < paddle2->getTop() &&
 			ball->getVelX() > 0)  {
@@ -114,7 +118,7 @@ void GamePanel::update(float deltaTime) {
 		}
 	}
 
-	if (ball->getX() < GamePanel::WIDTH / 2 - 100)
+	if (ball->getX() < GamePanel::WIDTH / 2 - testAI)
 	{
 		if (ball->getTop() < paddle1->getTop() &&
 			ball->getVelX() < 0) {

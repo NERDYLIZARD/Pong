@@ -54,13 +54,6 @@ void Ball::update(float deltaTime) {
 	//else
 	//	vel.x = 0;
 
-	//if (getLeft() < 0) vel.x = speed;
-	//else if (getRight() > float(GamePanel::WIDTH)) vel.x = -speed;
-	//
-	//if (getTop() - r < 0) vel.y = speed;
-	//else if (getBottom() > float(GamePanel::HEIGHT)) vel.y = -speed;
-
-
 	if (getLeft() < 0 || getRight() > float(GamePanel::WIDTH)) {
 		angle = 180.f - angle;
 	}
