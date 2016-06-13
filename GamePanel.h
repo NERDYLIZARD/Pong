@@ -18,6 +18,8 @@ class GamePanel
 	Ball *ball;
 	Paddle *paddle1;
 	Paddle *paddle2;
+	sf::CircleShape circleField;
+	sf::RectangleShape lineField;
 
 public:
 	static const int WIDTH;
