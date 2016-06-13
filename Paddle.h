@@ -17,6 +17,7 @@ class Paddle
 	sf::RectangleShape shape;
 	sf::Vector2f vel;
 
+
 public:
 	float getX() const;
 	float getY() const;
