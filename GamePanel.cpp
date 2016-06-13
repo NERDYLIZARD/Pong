@@ -8,7 +8,8 @@
 // declare in .cpp as static is a class member (!obj member)
 const int GamePanel::WIDTH = 640;
 const int GamePanel::HEIGHT = 480;
-sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG");
+sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG", 
+							sf::Style::Default, sf::ContextSettings(24, 8, 4) );
 
 GamePanel::GamePanel() :
 	pause(false),
@@ -23,8 +24,19 @@ GamePanel::GamePanel() :
 	paddle1 = new Paddle(1, 20.f, 20.f);
 	paddle2 = new Paddle(2, (float)WIDTH - 20.f ,
 							(float)HEIGHT - 20.f);
+// field
+	float r = 50.f;
+	circleField.setRadius(r);
+	circleField.setOrigin(r, r);
+	circleField.setPosition(WIDTH / 2, HEIGHT / 2);
+	circleField.setFillColor(sf::Color::Black);
+	circleField.setOutlineThickness(5);
 
-	//window.setFramerateLimit(60);
+	float w = 5.f, h = HEIGHT;
+	lineField.setSize(sf::Vector2f(w, h));
+	lineField.setOrigin(w/2, h/2);
+	lineField.setPosition(WIDTH / 2, HEIGHT/2);
+	
 	gameLoop();
 
 }
@@ -146,7 +158,9 @@ void GamePanel::update(float deltaTime) {
 
 void GamePanel::render() {
 	window.clear();
-
+	
+	window.draw(circleField);
+	window.draw(lineField);
 	ball->draw(window);
 	paddle1->draw(window);
 	paddle2->draw(window);
