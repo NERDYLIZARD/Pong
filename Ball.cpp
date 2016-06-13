@@ -58,16 +58,14 @@ void Ball::update(float deltaTime) {
 		angle = 180.f - angle;
 	}
 
-	if (getTop() < 0) {
-		//angle = 360.f - angle;
-		angle = -angle;
-		y = 0.1f;
+	if (getTop() < 0 && vel.y < 0) {
+		angle = 360.f - angle;
+		y = 1.f;
 	}
 
-	if (getBottom() >= float(GamePanel::HEIGHT) ) {
-		//angle = 360.f - angle;
-		angle = -angle;
-		y = GamePanel::HEIGHT - 0.1f;
+	if (getBottom() >= float(GamePanel::HEIGHT) && vel.y > 0) {
+		angle = 360.f - angle;
+		y = GamePanel::HEIGHT - 1.f;
 	}
 
 	//vel.x = cos(toRadians(angle)) * speed;

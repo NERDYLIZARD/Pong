@@ -52,7 +52,9 @@ void GamePanel::gameLoop() {
 		//	accumulatedTime -= framecap;
 		//	//interpolation = accumulatedTime;
 		//}
-		update(elapsed);
+		if (!pause) {
+			update(elapsed);
+		}
 		render();
 	}
 }
@@ -101,10 +103,10 @@ void GamePanel::update(float deltaTime) {
 	}
 
 // AI
-	int testAI = 150;
+	int testAI = 0;
 	if (ball->getX() > GamePanel::WIDTH / 2 + testAI )
 	{
-		if (ball->getTop() < paddle2->getTop() &&
+		if (ball->getY() <= paddle2->getY() &&
 			ball->getVelX() > 0)  {
 			paddle2->setUp(true);
 		}
@@ -112,7 +114,7 @@ void GamePanel::update(float deltaTime) {
 			paddle2->setUp(false);
 		}
 		
-		if (ball->getBottom() > paddle2->getBottom() &&
+		if (ball->getY() > paddle2->getY() &&
 			ball->getVelX() > 0)  {
 			paddle2->setDown(true);
 		}
