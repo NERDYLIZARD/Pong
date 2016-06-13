@@ -7,6 +7,7 @@ Paddle::Paddle(int padNum, float x, float y) :
 	width(5.0f),
 	height(50.0f),
 	speed(10.f),
+	deltaSpeed(600.f),
 	vel(0, 0),
 	up(false),
 	down(false)
@@ -49,14 +50,15 @@ void Paddle::setVelY(float velY) { this->vel.y = velY;}
 int Paddle::getPadNum() const { return padNum; }
 
 
-void Paddle::update(float delta) {
+void Paddle::update(float deltaTime) {
 	if (up && getTop() > 0)
-		vel.y = -speed;
+		//vel.y = -speed;
+		vel.y = -deltaSpeed * deltaTime;
 	else if (down && getBottom() < GamePanel::HEIGHT)
-		vel.y = speed;
+		vel.y = deltaSpeed * deltaTime;
 
 	shape.move(vel);
-	vel.y = 0;
+	vel.y = 0.f;
 }
 
 void Paddle::draw(sf::RenderWindow &window) {

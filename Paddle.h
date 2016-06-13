@@ -9,6 +9,7 @@ class Paddle
 	float width;
 	float height;
 	float speed;
+	float deltaSpeed;
 
 	bool up;
 	bool down;

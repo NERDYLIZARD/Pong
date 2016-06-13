@@ -12,7 +12,7 @@ class GamePanel
 	bool pause;
 	int fps;
 	float framecap;
-	float delta;
+	float elapsed;
 	float accumulatedTime;
 	//float interpolation;
 	Ball *ball;

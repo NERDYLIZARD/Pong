@@ -9,6 +9,7 @@ class Ball
 	float y;
 	float r;
 	float speed;
+	float deltaSpeed;
 	float angle;
 	float maxAngle;
 	const static float PI;

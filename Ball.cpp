@@ -9,6 +9,7 @@ const float Ball::PI = 3.14159265358979f;
 Ball::Ball(float x, float y) :
 	r(5.f),
 	speed(10.f),
+	deltaSpeed(600.f),
 	angle(30.f),
 	maxAngle(60.f),
 	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)))
@@ -32,7 +33,6 @@ float Ball::getVelX() const
 }
 float Ball::getAngle() { return angle; }
 float Ball::getMaxAngle() { return maxAngle; }
-
 
 void Ball::setX(float x) { this->x = x; }
 void Ball::setAngle(float angle) { this->angle = angle; }
@@ -59,20 +59,22 @@ void Ball::update(float deltaTime) {
 	}
 
 	if (getTop() < 0) {
-		angle = 360.f - angle;
+		//angle = 360.f - angle;
+		angle = -angle;
 		y = 0.1f;
 	}
 
 	if (getBottom() >= float(GamePanel::HEIGHT) ) {
-		angle = 360.f - angle;
+		//angle = 360.f - angle;
+		angle = -angle;
 		y = GamePanel::HEIGHT - 0.1f;
 	}
 
-	vel.x = cos(toRadians(angle)) * speed;
-	vel.y = sin(toRadians(angle)) * speed;
+	//vel.x = cos(toRadians(angle)) * speed;
+	//vel.y = sin(toRadians(angle)) * speed;
 
-	//vel.x = cos(toRadians(angle)) * speed * deltaTime;
-	//vel.y = sin(toRadians(angle)) * speed * deltaTime;
+	vel.x = cos(toRadians(angle)) * deltaSpeed * deltaTime;
+	vel.y = sin(toRadians(angle)) * deltaSpeed * deltaTime;
 
 	// x += dx, y += dy
 	shape.move(vel);

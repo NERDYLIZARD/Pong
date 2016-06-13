@@ -13,16 +13,18 @@ sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG");
 GamePanel::GamePanel() :
 	pause(false),
 	fps(60),
-	framecap(1000000.f / fps),
+	//framecap(1000000.f / fps),
+	framecap(1.f / fps),
 	accumulatedTime(0.f),
 	//interpolation(0.0),
-	delta(0.f)
+	elapsed(0.f)
 {
 	ball = new Ball(WIDTH / 2.f, HEIGHT / 2.f);
 	paddle1 = new Paddle(1, 20.f, 20.f);
 	paddle2 = new Paddle(2, (float)WIDTH - 20.f ,
 							(float)HEIGHT - 20.f);
 
+	//window.setFramerateLimit(60);
 	gameLoop();
 
 }
@@ -40,16 +42,17 @@ void GamePanel::gameLoop() {
 	while (window.isOpen()) {
 		input();
 
-		delta = clock.restart().asMicroseconds();
-		accumulatedTime += delta;
-		while (accumulatedTime >= framecap) {
-			if (!pause) {
-				//std::cout << delta / 1000000.f << '\n';
-				update(delta/1000000.f);
-			}
-			accumulatedTime -= framecap;
-			//interpolation = accumulatedTime;
-		}
+		elapsed = clock.restart().asSeconds();
+		accumulatedTime += elapsed;
+		//while (accumulatedTime >= framecap) {
+		//	if (!pause) {
+		//		std::cout << elapsed << '\n';
+		//		update(elapsed);
+		//	}
+		//	accumulatedTime -= framecap;
+		//	//interpolation = accumulatedTime;
+		//}
+		update(elapsed);
 		render();
 	}
 }
