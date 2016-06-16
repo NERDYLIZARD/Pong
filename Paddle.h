@@ -3,7 +3,7 @@
 
 class Paddle
 {
-	int padNum;
+	int score;
 	float x;
 	float y;
 	float width;
@@ -16,8 +16,7 @@ class Paddle
 
 	sf::RectangleShape shape;
 	sf::Vector2f vel;
-
-
+	
 public:
 	float getX() const;
 	float getY() const;
@@ -34,16 +33,16 @@ public:
 	float getBottom() const;
 
 	float getSpeed() const;
-
+	int getScore();
 
 	void setUp(bool);
 	void setDown(bool);
 	void setVelY(float);
-
-	int getPadNum() const;
+	void increaseScore();
+	void setPosition(float, float);
 
 	void update(float);
 	void draw(sf::RenderWindow&);
-	Paddle(int, float, float);
+	Paddle(float, float);
 	~Paddle();
 };

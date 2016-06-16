@@ -10,8 +10,8 @@ Ball::Ball(float x, float y) :
 	r(5.f),
 	speed(10.f),
 	deltaSpeed(600.f),
-	angle(30.f),
-	maxAngle(60.f),
+	angle(rand() %360 + 1),
+	maxAngle(65.f),
 	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)))
 {
 	shape.setPosition(x, y);
@@ -27,15 +27,14 @@ float Ball::getLeft() { return getX() - r; }
 float Ball::getRight() { return getX() + r; }
 float Ball::getTop() { return getY() - r; }
 float Ball::getBottom() { return getY() + r; }
-float Ball::getVelX() const
-{
-	return vel.x;
-}
+float Ball::getVelX() const {return vel.x;}
 float Ball::getAngle() { return angle; }
 float Ball::getMaxAngle() { return maxAngle; }
 
 void Ball::setX(float x) { this->x = x; }
 void Ball::setAngle(float angle) { this->angle = angle; }
+void Ball::setPosition(float x, float y) { shape.setPosition(x, y); }
+
 
 
 void Ball::update(float deltaTime) {
@@ -54,18 +53,20 @@ void Ball::update(float deltaTime) {
 	//else
 	//	vel.x = 0;
 
+	//if (getLeft() < 0 || getRight() > float(GamePanel::WIDTH)) {
+	//	angle = 180.f - angle;
+	//}
+
 	if (getLeft() < 0 || getRight() > float(GamePanel::WIDTH)) {
-		angle = 180.f - angle;
+		GamePanel::isAPoint = true;
 	}
 
 	if (getTop() < 0 && vel.y < 0) {
 		angle = 360.f - angle;
-		//y = 1.f;
 	}
 
 	if (getBottom() >= float(GamePanel::HEIGHT) && vel.y > 0) {
 		angle = 360.f - angle;
-		//y = GamePanel::HEIGHT - 1.f;
 	}
 
 	vel.x = cos(toRadians(angle)) * deltaSpeed * deltaTime;
@@ -82,6 +83,7 @@ float Ball::toRadians(float angle) {
 
 void Ball::draw(sf::RenderWindow &window) {
 	window.draw(shape);
+
 }
 
 Ball::~Ball()

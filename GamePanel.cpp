@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include "GamePanel.h"
 // ball.h & paddle.h are required for func dec.
 // forward dec in .h only determine the size of obj i.e data member
@@ -10,6 +11,7 @@ const int GamePanel::WIDTH = 640;
 const int GamePanel::HEIGHT = 480;
 sf::RenderWindow GamePanel::window(sf::VideoMode(WIDTH, HEIGHT), "POUNG", 
 							sf::Style::Default, sf::ContextSettings(24, 8, 4) );
+bool GamePanel::isAPoint = false;
 
 GamePanel::GamePanel() :
 	pause(false),
@@ -17,15 +19,30 @@ GamePanel::GamePanel() :
 	//framecap(1000000.f / fps),
 	framecap(1.f / fps),
 	accumulatedTime(0.f),
-	//interpolation(0.0),
+	timeSinceReGame(0.f),
 	elapsed(0.f)
 {
+
 	ball = new Ball(WIDTH / 2.f, HEIGHT / 2.f);
-	paddle1 = new Paddle(1, 20.f, 20.f);
-	paddle2 = new Paddle(2, (float)WIDTH - 20.f ,
-							(float)HEIGHT - 20.f);
-// field
-	float r = 50.f;
+	paddle1 = new Paddle(20.f, HEIGHT / 2.f);
+	paddle2 = new Paddle((float)WIDTH - 20.f, HEIGHT / 2.f);
+
+	sf::Font font;
+	font.loadFromFile("Resources/Sansation_Regular.ttf");
+
+//	ScoreBoard
+	scoreTextLeft.setFont(font);
+	scoreTextLeft.setCharacterSize(40);
+	scoreTextLeft.setPosition(GamePanel::WIDTH / 4.f, 10.f);
+	scoreTextLeft.setString(std::to_string(paddle1->getScore()) );
+
+	scoreTextRight.setFont(font);
+	scoreTextRight.setCharacterSize(40);
+	scoreTextRight.setPosition(GamePanel::WIDTH - GamePanel::WIDTH / 4.f, 10.f);
+	scoreTextRight.setString(std::to_string((long)paddle2->getScore()));
+
+// Field
+	float r = 70.f;
 	circleField.setRadius(r);
 	circleField.setOrigin(r, r);
 	circleField.setPosition(WIDTH / 2, HEIGHT / 2);
@@ -52,18 +69,16 @@ void GamePanel::gameLoop() {
 	sf::Clock clock;
 
 	while (window.isOpen()) {
-		input();
 
+		input();
 		elapsed = clock.restart().asSeconds();
-		accumulatedTime += elapsed;
+		//accumulatedTime += elapsed;
 		//while (accumulatedTime >= framecap) {
 		//	if (!pause) {
-		//		std::cout << elapsed << '\n';
 		//		update(elapsed);
 		//	}
 		//	accumulatedTime -= framecap;
-		//	//interpolation = accumulatedTime;
-		//}
+		//} 
 		if (!pause) {
 			update(elapsed);
 		}
@@ -74,20 +89,39 @@ void GamePanel::gameLoop() {
 
 void GamePanel::update(float deltaTime) {
 
+
+	if(isAPoint) {
+		
+		timeSinceReGame += deltaTime;
+		scoreUp();
+		scoreTextLeft.setString(std::to_string((long)paddle1->getScore()));
+		scoreTextRight.setString(std::to_string((long)paddle2->getScore()));
+		
+		ball->setPosition(WIDTH / 2.f, HEIGHT / 2.f);
+		ball->setAngle(rand() % 360 + 1);
+		paddle1->setPosition(20.f, HEIGHT / 2.f);
+		paddle2->setPosition(WIDTH - 20.f, HEIGHT / 2.f);
+
+		if (timeSinceReGame < .5f) return;
+		
+		timeSinceReGame = 0.f;
+		GamePanel::isAPoint = false;
+	}
+
 	paddle1->update(deltaTime);
 	paddle2->update(deltaTime);
 	ball->update(deltaTime);
 
-// ball-paddle collision
-	//left paddle
+	// ball-paddle collision
+		//left paddle
 	if (ball->getLeft() < paddle1->getRight() &&
 		ball->getVelX() < 0 &&
 		ball->getBottom() >= paddle1->getTop() &&
-		ball->getTop() <= paddle1->getBottom() )
+		ball->getTop() <= paddle1->getBottom())
 	{
-	// relative with intersecting paddle-ball
-		// hit center, ball bounds horizontally
-		// hit edges, ball bounds by maxAngle
+		// relative with intersecting paddle-ball
+			// hit center, ball bounds horizontally
+			// hit edges, ball bounds by maxAngle
 		float relativeIntersectY = paddle1->getY() - ball->getY();
 		float normalizedRelativeIntersectY = relativeIntersectY / (paddle1->getHeight() / 2);
 		// minus sign for realistic direction
@@ -96,38 +130,40 @@ void GamePanel::update(float deltaTime) {
 		normalizedRelativeIntersectY = -normalizedRelativeIntersectY;
 		// normalized: [-1, 1]
 		// angle = [-maxAngle, maxAngle]
-		ball->setAngle( normalizedRelativeIntersectY * ball->getMaxAngle() );
+		ball->setAngle(normalizedRelativeIntersectY * ball->getMaxAngle());
 		ball->setX(paddle1->getRight() + ball->getR() + 0.1f);
 	}
 
 	// right paddle
 	if (ball->getRight() > paddle2->getLeft() &&
 		ball->getVelX() > 0 &&
-		ball->getBottom() >= paddle2->getTop() && 
-		ball->getTop() <= paddle2->getBottom() )
+		ball->getBottom() >= paddle2->getTop() &&
+		ball->getTop() <= paddle2->getBottom())
 	{
 		float relativeIntersectY = paddle2->getY() - ball->getY();
-		float normalizedRelativeIntersectY = relativeIntersectY / (paddle2->getHeight()/2);
+		float normalizedRelativeIntersectY = relativeIntersectY / (paddle2->getHeight() / 2);
 		normalizedRelativeIntersectY = -normalizedRelativeIntersectY;
 
-		ball->setAngle( 180.f - (normalizedRelativeIntersectY * ball->getMaxAngle()) );
+		ball->setAngle(180.f - (normalizedRelativeIntersectY * ball->getMaxAngle()));
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
 	}
 
-// AI
-	int testAI = 0;
-	if (ball->getX() > GamePanel::WIDTH / 2 + testAI )
+	// AI
+		// right paddle
+	int testAI = 200;
+	if (ball->getX() > GamePanel::WIDTH / 2 + testAI
+		&& ball->getX() < GamePanel::WIDTH)
 	{
 		if (ball->getY() <= paddle2->getY() &&
-			ball->getVelX() > 0)  {
+			ball->getVelX() > 0) {
 			paddle2->setUp(true);
 		}
 		else {
 			paddle2->setUp(false);
 		}
-		
+
 		if (ball->getY() > paddle2->getY() &&
-			ball->getVelX() > 0)  {
+			ball->getVelX() > 0) {
 			paddle2->setDown(true);
 		}
 		else {
@@ -135,6 +171,7 @@ void GamePanel::update(float deltaTime) {
 		}
 	}
 
+	//	left paddle
 	if (ball->getX() < GamePanel::WIDTH / 2 - testAI)
 	{
 		if (ball->getTop() < paddle1->getTop() &&
@@ -159,6 +196,8 @@ void GamePanel::update(float deltaTime) {
 void GamePanel::render() {
 	window.clear();
 	
+	window.draw(scoreTextLeft);
+	window.draw(scoreTextRight);
 	window.draw(circleField);
 	window.draw(lineField);
 	ball->draw(window);
@@ -168,9 +207,15 @@ void GamePanel::render() {
 	window.display();
 }
 
+void GamePanel::scoreUp() {
+	if (ball->getX() < GamePanel::WIDTH / 2.f)
+		paddle2->increaseScore();
+	else if (ball->getX() > GamePanel::WIDTH / 2.f)
+		paddle1->increaseScore();
+}
+
 void GamePanel::input() {
 	sf::Event event;
-	//window.setKeyRepeatEnabled(true);
 
 	while (window.pollEvent(event)) {
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::LControl))

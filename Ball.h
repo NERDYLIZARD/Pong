@@ -31,7 +31,8 @@ public:
 
 	void setX(float);
 	void setAngle(float);
-	
+	void setPosition(float, float);
+
 	float toRadians(float);
 
 	void update(float);

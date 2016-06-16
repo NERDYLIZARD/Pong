@@ -14,23 +14,28 @@ class GamePanel
 	float framecap;
 	float elapsed;
 	float accumulatedTime;
-	//float interpolation;
+	float timeSinceReGame;
+	//float interpolator;
 	Ball *ball;
 	Paddle *paddle1;
 	Paddle *paddle2;
 	sf::CircleShape circleField;
 	sf::RectangleShape lineField;
+	sf::Text scoreTextLeft;
+	sf::Text scoreTextRight;
 
 public:
 	static const int WIDTH;
 	static const int HEIGHT;
 	static sf::RenderWindow window;
+	static bool isAPoint;
 
 
 public:
 	GamePanel();
 	~GamePanel();
 	void gameLoop();
+	void scoreUp();
 	void input();
 	void update(float);
 	void render();

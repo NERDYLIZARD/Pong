@@ -3,23 +3,19 @@
 #include "Paddle.h"
 
 
-Paddle::Paddle(int padNum, float x, float y) :
+Paddle::Paddle(float x, float y) :
 	width(5.0f),
 	height(50.0f),
 	speed(10.f),
 	deltaSpeed(600.f),
-	vel(0, 0),
+	vel(0.f, 0.f),
+	score(0),
 	up(false),
 	down(false)
 {
-	this->padNum = padNum;
-	if(padNum == 1)
-		shape.setPosition(x + width / 2, y + height / 2);
-	else if (padNum == 2)
-		shape.setPosition(x - width / 2, y - height / 2);
-
 	shape.setOrigin(width / 2, height / 2);
 	shape.setSize(sf::Vector2f(width, height));
+	shape.setPosition(x, y);
 }
 
 float Paddle::getX() const { return shape.getPosition().x; }
@@ -42,17 +38,21 @@ float Paddle::getSpeed() const
 	return speed;
 }
 
+int Paddle::getScore() {return score;}
+
 void Paddle::setUp(bool boo) { up = boo; }
 void Paddle::setDown(bool boo) { down = boo; }
 
 void Paddle::setVelY(float velY) { this->vel.y = velY;}
 
-int Paddle::getPadNum() const { return padNum; }
+void Paddle::increaseScore() {score++;}
 
+void Paddle::setPosition(float x, float y) {
+	shape.setPosition(x, y);
+}
 
 void Paddle::update(float deltaTime) {
 	if (up && getTop() > 0)
-		//vel.y = -speed;
 		vel.y = -deltaSpeed * deltaTime;
 	else if (down && getBottom() < GamePanel::HEIGHT)
 		vel.y = deltaSpeed * deltaTime;
