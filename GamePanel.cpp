@@ -22,40 +22,11 @@ GamePanel::GamePanel() :
 	timeSinceReGame(0.f),
 	elapsed(0.f)
 {
-
 	ball = new Ball(WIDTH / 2.f, HEIGHT / 2.f);
 	paddle1 = new Paddle(20.f, HEIGHT / 2.f);
 	paddle2 = new Paddle((float)WIDTH - 20.f, HEIGHT / 2.f);
 
-	sf::Font font;
-	font.loadFromFile("Resources/Sansation_Regular.ttf");
-
-//	ScoreBoard
-	scoreTextLeft.setFont(font);
-	scoreTextLeft.setCharacterSize(40);
-	scoreTextLeft.setPosition(GamePanel::WIDTH / 4.f, 10.f);
-	scoreTextLeft.setString(std::to_string(paddle1->getScore()) );
-
-	scoreTextRight.setFont(font);
-	scoreTextRight.setCharacterSize(40);
-	scoreTextRight.setPosition(GamePanel::WIDTH - GamePanel::WIDTH / 4.f, 10.f);
-	scoreTextRight.setString(std::to_string((long)paddle2->getScore()));
-
-// Field
-	float r = 70.f;
-	circleField.setRadius(r);
-	circleField.setOrigin(r, r);
-	circleField.setPosition(WIDTH / 2, HEIGHT / 2);
-	circleField.setFillColor(sf::Color::Black);
-	circleField.setOutlineThickness(5);
-
-	float w = 5.f, h = HEIGHT;
-	lineField.setSize(sf::Vector2f(w, h));
-	lineField.setOrigin(w/2, h/2);
-	lineField.setPosition(WIDTH / 2, HEIGHT/2);
-	
 	gameLoop();
-
 }
 
 GamePanel::~GamePanel()
@@ -89,49 +60,82 @@ void GamePanel::gameLoop() {
 
 void GamePanel::update(float deltaTime) {
 
-
 	if(isAPoint) {
 		
 		timeSinceReGame += deltaTime;
 		scoreUp();
-		scoreTextLeft.setString(std::to_string((long)paddle1->getScore()));
-		scoreTextRight.setString(std::to_string((long)paddle2->getScore()));
-		
-		ball->setPosition(WIDTH / 2.f, HEIGHT / 2.f);
-		ball->setAngle(rand() % 360 + 1);
-		paddle1->setPosition(20.f, HEIGHT / 2.f);
-		paddle2->setPosition(WIDTH - 20.f, HEIGHT / 2.f);
 
-		if (timeSinceReGame < .5f) return;
+		ball->reset(WIDTH / 2.f, HEIGHT / 2.f);
+		paddle1->reset(20.f, HEIGHT / 2.f);
+		paddle2->reset(WIDTH - 20.f, HEIGHT / 2.f);
+
+		if (timeSinceReGame < 0.5f) return;
 		
 		timeSinceReGame = 0.f;
-		GamePanel::isAPoint = false;
+		isAPoint = false;
 	}
 
-	paddle1->update(deltaTime);
-	paddle2->update(deltaTime);
-	ball->update(deltaTime);
 
-	// ball-paddle collision
-		//left paddle
+// AI
+	// deadline = -160; if visibility > -160 then there is 
+		// posibility that it will fail
+	
+	int full_board_visibility = -(GamePanel::WIDTH / 2);
+	int half_board_visibility = 0;
+	int quarter_board_visibility = GamePanel::WIDTH / 4;
+	int testAI = quarter_board_visibility;
+	
+	// right paddle
+	if (ball->getX() >= GamePanel::WIDTH / 2 + testAI
+		&& ball->getVelX() > 0)
+	{
+		if (ball->getY() <= paddle2->getY() )
+			paddle2->setDirectionUp(true);
+		else
+			paddle2->setDirectionUp(false);
+
+		if (ball->getY() > paddle2->getY() )
+			paddle2->setDirectionDown(true);
+		else
+			paddle2->setDirectionDown(false);
+	}
+
+	//	left paddle
+	else if (ball->getX() < GamePanel::WIDTH / 2 - testAI
+		&& ball->getVelX() < 0)
+	{
+		if (ball->getTop() < paddle1->getTop() ) 
+			paddle1->setDirectionUp(true);
+		else
+			paddle1->setDirectionUp(false);
+
+		if (ball->getBottom() > paddle1->getBottom() )
+			paddle1->setDirectionDown(true);
+		else
+			paddle1->setDirectionDown(false);
+	}
+
+// ball-paddle collision
+	//left paddle
 	if (ball->getLeft() < paddle1->getRight() &&
 		ball->getVelX() < 0 &&
 		ball->getBottom() >= paddle1->getTop() &&
 		ball->getTop() <= paddle1->getBottom())
 	{
 		// relative with intersecting paddle-ball
-			// hit center, ball bounds horizontally
-			// hit edges, ball bounds by maxAngle
+		// hit center, ball bounds horizontally
+		// hit edges, ball bounds by maxAngle
 		float relativeIntersectY = paddle1->getY() - ball->getY();
 		float normalizedRelativeIntersectY = relativeIntersectY / (paddle1->getHeight() / 2);
 		// minus sign for realistic direction
-			// hit bottom, ball bounds down
-			// hit top, ball bounds up
+		// hit bottom, ball bounds down
+		// hit top, ball bounds up
 		normalizedRelativeIntersectY = -normalizedRelativeIntersectY;
 		// normalized: [-1, 1]
 		// angle = [-maxAngle, maxAngle]
 		ball->setAngle(normalizedRelativeIntersectY * ball->getMaxAngle());
 		ball->setX(paddle1->getRight() + ball->getR() + 0.1f);
+		paddle1->resetDirection();
 	}
 
 	// right paddle
@@ -146,60 +150,21 @@ void GamePanel::update(float deltaTime) {
 
 		ball->setAngle(180.f - (normalizedRelativeIntersectY * ball->getMaxAngle()));
 		ball->setX(paddle2->getLeft() - ball->getR() - 0.1f);
+		paddle2->resetDirection();
+
 	}
 
-	// AI
-		// right paddle
-	int testAI = 200;
-	if (ball->getX() > GamePanel::WIDTH / 2 + testAI
-		&& ball->getX() < GamePanel::WIDTH)
-	{
-		if (ball->getY() <= paddle2->getY() &&
-			ball->getVelX() > 0) {
-			paddle2->setUp(true);
-		}
-		else {
-			paddle2->setUp(false);
-		}
-
-		if (ball->getY() > paddle2->getY() &&
-			ball->getVelX() > 0) {
-			paddle2->setDown(true);
-		}
-		else {
-			paddle2->setDown(false);
-		}
-	}
-
-	//	left paddle
-	if (ball->getX() < GamePanel::WIDTH / 2 - testAI)
-	{
-		if (ball->getTop() < paddle1->getTop() &&
-			ball->getVelX() < 0) {
-			paddle1->setUp(true);
-		}
-		else {
-			paddle1->setUp(false);
-		}
-
-		if (ball->getBottom() > paddle1->getBottom() &&
-			ball->getVelX() < 0) {
-			paddle1->setDown(true);
-		}
-		else {
-			paddle1->setDown(false);
-		}
-	}
+	paddle1->update(deltaTime);
+	paddle2->update(deltaTime);
+	ball->update(deltaTime);
 
 }
 
 void GamePanel::render() {
 	window.clear();
 	
-	window.draw(scoreTextLeft);
-	window.draw(scoreTextRight);
-	window.draw(circleField);
-	window.draw(lineField);
+	renderField();
+	renderScoreBoard();
 	ball->draw(window);
 	paddle1->draw(window);
 	paddle2->draw(window);
@@ -212,6 +177,48 @@ void GamePanel::scoreUp() {
 		paddle2->increaseScore();
 	else if (ball->getX() > GamePanel::WIDTH / 2.f)
 		paddle1->increaseScore();
+}
+
+void GamePanel::renderField() {
+	sf::CircleShape midCircle;
+	sf::RectangleShape midLine;
+
+	float r = 70.f;
+	midCircle.setRadius(r);
+	midCircle.setOrigin(r, r);
+	midCircle.setPosition(WIDTH / 2, HEIGHT / 2);
+	midCircle.setFillColor(sf::Color::Black);
+	midCircle.setOutlineThickness(5);
+
+	float w = 5.f, h = HEIGHT;
+	midLine.setSize(sf::Vector2f(w, h));
+	midLine.setOrigin(w / 2, h / 2);
+	midLine.setPosition(WIDTH / 2, HEIGHT / 2);
+
+	window.draw(midCircle);
+	window.draw(midLine);
+}
+
+void GamePanel::renderScoreBoard() {
+	sf::Text scoreTextLeft;
+	sf::Text scoreTextRight;
+	
+	sf::Font font;
+	font.loadFromFile("Resources/Sansation_Regular.ttf");
+
+	scoreTextLeft.setFont(font);
+	scoreTextLeft.setCharacterSize(40);
+	scoreTextLeft.setPosition(GamePanel::WIDTH / 4.f, 10.f);
+	scoreTextLeft.setString(std::to_string(paddle1->getScore()));
+
+	scoreTextRight.setFont(font);
+	scoreTextRight.setCharacterSize(40);
+	scoreTextRight.setPosition(GamePanel::WIDTH - GamePanel::WIDTH / 4.f, 10.f);
+	scoreTextRight.setString(std::to_string((long)paddle2->getScore()));
+
+	window.draw(scoreTextLeft);
+	window.draw(scoreTextRight);
+
 }
 
 void GamePanel::input() {
@@ -229,25 +236,27 @@ void GamePanel::input() {
 
 		// left paddle input
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-			paddle1->setUp(true);
+			paddle1->setDirectionUp(true);
 		else
-			paddle1->setUp(false);
+			paddle1->setDirectionUp(false);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S))
-			paddle1->setDown(true);
+			paddle1->setDirectionDown(true);
 		else
-			paddle1->setDown(false);
+			paddle1->setDirectionDown(false);
 
 		// right paddle input
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::O))
-			paddle2->setUp(true);
+			paddle2->setDirectionUp(true);
 		else
-			paddle2->setUp(false);
+			paddle2->setDirectionUp(false);
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::L))
-			paddle2->setDown(true);
+			paddle2->setDirectionDown(true);
 		else
-			paddle2->setDown(false);
+			paddle2->setDirectionDown(false);
 
 	}
 
 }
+
+
 

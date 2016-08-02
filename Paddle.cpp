@@ -33,19 +33,14 @@ float Paddle::getRight() const { return getX() + width / 2; }
 float Paddle::getTop() const { return getY() - height / 2; }
 float Paddle::getBottom() const { return getY() + height / 2; }
 
-float Paddle::getSpeed() const
-{
-	return speed;
-}
-
+float Paddle::getSpeed() const { return speed; }
 int Paddle::getScore() {return score;}
+void Paddle::increaseScore() {score++;}
 
-void Paddle::setUp(bool boo) { up = boo; }
-void Paddle::setDown(bool boo) { down = boo; }
+void Paddle::setDirectionUp(bool boo) { up = boo; }
+void Paddle::setDirectionDown(bool boo) { down = boo; }
 
 void Paddle::setVelY(float velY) { this->vel.y = velY;}
-
-void Paddle::increaseScore() {score++;}
 
 void Paddle::setPosition(float x, float y) {
 	shape.setPosition(x, y);
@@ -70,4 +65,15 @@ Paddle::~Paddle()
 {
 }
 
+void Paddle::reset(float x, float y)
+{
+	setPosition(x,y);
+	resetDirection();
+}
+
+void Paddle::resetDirection()
+{
+	setDirectionUp(false);
+	setDirectionDown(false);
+}
 

@@ -19,10 +19,6 @@ class GamePanel
 	Ball *ball;
 	Paddle *paddle1;
 	Paddle *paddle2;
-	sf::CircleShape circleField;
-	sf::RectangleShape lineField;
-	sf::Text scoreTextLeft;
-	sf::Text scoreTextRight;
 
 public:
 	static const int WIDTH;
@@ -34,8 +30,12 @@ public:
 public:
 	GamePanel();
 	~GamePanel();
-	void gameLoop();
+	
 	void scoreUp();
+	void renderField();
+	void renderScoreBoard();
+
+	void gameLoop();
 	void input();
 	void update(float);
 	void render();

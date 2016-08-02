@@ -35,14 +35,17 @@ public:
 	float getSpeed() const;
 	int getScore();
 
-	void setUp(bool);
-	void setDown(bool);
+	void setDirectionUp(bool);
+	void setDirectionDown(bool);
 	void setVelY(float);
 	void increaseScore();
 	void setPosition(float, float);
-
+	void resetDirection();
+	void reset(float, float);
+	
 	void update(float);
 	void draw(sf::RenderWindow&);
+
 	Paddle(float, float);
 	~Paddle();
 };
