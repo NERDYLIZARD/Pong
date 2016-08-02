@@ -10,11 +10,10 @@ Ball::Ball(float x, float y) :
 	r(5.f),
 	speed(10.f),
 	deltaSpeed(600.f),
-	angle(rand() %360 + 1),
 	maxAngle(65.f),
 	vel(speed * cos(toRadians(angle)), speed * sin(toRadians(angle)))
 {
-	shape.setPosition(x, y);
+	reset(x, y);
 	shape.setRadius(r);
 	shape.setFillColor(sf::Color::Red);
 	shape.setOrigin(r, r);
@@ -52,7 +51,7 @@ void Ball::update(float deltaTime) {
 	//	vel.x = speed;
 	//else
 	//	vel.x = 0;
-
+	//
 	//if (getLeft() < 0 || getRight() > float(GamePanel::WIDTH)) {
 	//	angle = 180.f - angle;
 	//}
@@ -84,6 +83,18 @@ float Ball::toRadians(float angle) {
 void Ball::draw(sf::RenderWindow &window) {
 	window.draw(shape);
 
+}
+
+void Ball::resetAngle() {
+	do {
+		angle = rand() % 360 + 1;
+	} while ((angle > 80 && angle < 100)
+		|| (angle > 260 && angle < 280));
+}
+
+void Ball::reset(float x, float y) {
+	resetAngle();
+	setPosition(x, y);
 }
 
 Ball::~Ball()
