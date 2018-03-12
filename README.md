@@ -1,5 +1,5 @@
 # Poung
-A reincarnation of a classic 1972 arcade game, Pong. The game was developed with C++ and SFML library.
+A reincarnation of a classic 1972 arcade game, Pong. The game was developed with Object-Oriented C++ and SFML library.
 
 ### [Download](https://github.com/NERDYLIZARD/poung/releases/download/v1.0.0/Poung-v1.0.0-Windows.zip)
 
